@@ -110,9 +110,9 @@ app.post('/api/chat', async (req, res) => {
 // Score endpoint
 // Intake endpoint
 app.post('/api/intake', (req, res) => {
-  const data = req.body;
-  const score = calculateScore(data);
-  const caseValue = estimateCaseValue(data);
+  const { caseData } = req.body;
+  const score = calculateScore(caseData);
+  const caseValue = estimateCaseValue(caseData);
 
   res.json({
     score,
