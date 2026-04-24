@@ -70,6 +70,14 @@ function estimateCaseValue(data) {
   return Math.round(baseValue * multiplier);
 }
 
+// Serve static files first
+app.use(express.static('public'));
+
+// Root route - serve index.html
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 // Chat endpoint
 app.post('/api/chat', async (req, res) => {
   try {
@@ -121,9 +129,6 @@ app.get('/api/health', (req, res) => {
 app.get('/api/version', (req, res) => {
   res.json({ version: '1.0.0', environment: process.env.NODE_ENV || 'development' });
 });
-
-// Serve static files (optional UI)
-app.use(express.static('public'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
