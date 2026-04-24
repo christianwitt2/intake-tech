@@ -3,149 +3,152 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Intake Tech - AI Legal Intake</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; }
-    .container { max-width: 600px; margin: 40px auto; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
-    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
-    .header h1 { font-size: 28px; margin-bottom: 5px; }
-    .header p { opacity: 0.9; }
-    .chat-box { height: 400px; overflow-y: auto; padding: 20px; background: #fafafa; border-bottom: 1px solid #eee; }
-    .message { margin-bottom: 15px; }
-    .message.bot { text-align: left; }
-    .message.user { text-align: right; }
-    .message-text { display: inline-block; max-width: 80%; padding: 12px 16px; border-radius: 8px; }
-    .message.bot .message-text { background: white; border: 1px solid #ddd; color: #333; }
-    .message.user .message-text { background: #667eea; color: white; }
-    .input-area { padding: 20px; }
-    .input-group { display: flex; gap: 10px; }
-    input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
-    button { padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; }
-    button:hover { background: #5568d3; }
-    .score-box { background: #f0f4ff; padding: 15px; margin-top: 10px; border-radius: 4px; border-left: 4px solid #667eea; }
-    .score-box h3 { color: #667eea; margin-bottom: 8px; }
-    .score-value { font-size: 24px; font-weight: bold; color: #667eea; }
-  </style>
+  <title>Legal Case Intake - Intake Tech</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚖️ Intake Tech</h1>
-      <p>24/7 AI-Powered Legal Intake for Personal Injury</p>
+      <h1>Case Intake Form</h1>
+      <p>Quick evaluation of your legal matter</p>
+      <p class="tagline">Powered by Intake Tech</p>
     </div>
-    <div class="chat-box" id="chatBox"></div>
-    <div class="input-area">
-      <div class="input-group">
-        <input type="text" id="userInput" placeholder="Tell me about your case..." />
-        <button onclick="sendMessage()">Send</button>
+
+    <div class="form-container" id="form-container">
+      <div id="error-message" class="error-message"></div>
+      <div id="success-message" class="success-message"></div>
+
+      <div class="step-indicator">
+        <div class="step" data-step="1">1</div>
+        <div class="step" data-step="2">2</div>
+        <div class="step" data-step="3">3</div>
+        <div class="step" data-step="4">4</div>
+      </div>
+
+      <!-- Step 1: Contact Information -->
+      <div id="step1" class="form-section" style="display: none;">
+        <h2>Your Contact Information</h2>
+        
+        <div class="form-group">
+          <label for="firstName">First Name <span class="required">*</span></label>
+          <input type="text" id="firstName" name="firstName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name <span class="required">*</span></label>
+          <input type="text" id="lastName" name="lastName" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <span class="required">*</span></label>
+          <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" required>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-primary" onclick="nextStep()">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Case Type -->
+      <div id="step2" class="form-section" style="display: none;">
+        <h2>What type of case is this?</h2>
+        
+        <div class="form-group">
+          <label>Case Type <span class="required">*</span></label>
+          <div class="radio-group">
+            <div class="radio-item">
+              <input type="radio" id="personal-injury" name="caseType" value="personal-injury" required>
+              <label for="personal-injury">Personal Injury</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="employment" name="caseType" value="employment">
+              <label for="employment">Employment</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="contract" name="caseType" value="contract">
+              <label for="contract">Contract</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="other" name="caseType" value="other">
+              <label for="other">Other</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-secondary" onclick="previousStep()">← Back</button>
+          <button class="btn-primary" onclick="nextStep()">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Case Details -->
+      <div id="step3" class="form-section" style="display: none;">
+        <h2>Tell us about your case</h2>
+        
+        <div class="form-group">
+          <label for="caseDescription">Case Description <span class="required">*</span></label>
+          <textarea id="caseDescription" name="caseDescription" placeholder="Provide details about your legal matter..." required></textarea>
+          <div class="helper-text">Include relevant dates, parties involved, and key facts</div>
+        </div>
+
+        <div class="form-group">
+          <label for="dateOfIncident">Date of Incident <span class="required">*</span></label>
+          <input type="date" id="dateOfIncident" name="dateOfIncident" required>
+        </div>
+
+        <div class="form-group">
+          <label>Have you hired an attorney? <span class="required">*</span></label>
+          <div class="radio-group">
+            <div class="radio-item">
+              <input type="radio" id="attorney-yes" name="hasAttorney" value="yes" required>
+              <label for="attorney-yes">Yes</label>
+            </div>
+            <div class="radio-item">
+              <input type="radio" id="attorney-no" name="hasAttorney" value="no">
+              <label for="attorney-no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-secondary" onclick="previousStep()">← Back</button>
+          <button class="btn-primary" onclick="nextStep()">Next →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Submit -->
+      <div id="step4" class="form-section" style="display: none;">
+        <h2>Review & Submit</h2>
+        
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="agree" name="agree" required>
+            I agree to have my information reviewed and contacted by a representative
+          </label>
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="privacy" name="privacy" required>
+            I agree to the privacy policy
+          </label>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-secondary" onclick="previousStep()">← Back</button>
+          <button class="btn-primary" onclick="submitForm()">Submit Case →</button>
+        </div>
       </div>
     </div>
+
+    <div id="score-result" class="score-result"></div>
   </div>
 
-  <script>
-    let conversationHistory = [];
-    let caseData = {};
-
-    async function sendMessage() {
-      const input = document.getElementById('userInput');
-      const message = input.value.trim();
-      if (!message) return;
-
-      // Add user message to chat
-      addMessage(message, 'user');
-      input.value = '';
-
-      try {
-        const response = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message,
-            conversationHistory,
-          }),
-        });
-
-        const data = await response.json();
-        conversationHistory.push({ role: 'user', content: message });
-        conversationHistory.push({ role: 'assistant', content: data.reply });
-
-        addMessage(data.reply, 'bot');
-
-        // Extract data from user message
-        extractCaseData(message);
-
-        // After 5+ messages, show score
-        if (conversationHistory.length >= 10) {
-          scoreCase();
-        }
-      } catch (error) {
-        addMessage('Error: ' + error.message, 'bot');
-      }
-    }
-
-    function extractCaseData(message) {
-      const lower = message.toLowerCase();
-      
-      // State detection
-      const states = ['california', 'texas', 'florida', 'new york', 'pennsylvania'];
-      states.forEach(state => {
-        if (lower.includes(state)) caseData.state = state.substring(0, 2).toUpperCase();
-      });
-
-      // Insurance
-      if (lower.includes('insurance') && lower.includes('yes')) caseData.hasInsurance = true;
-      if (lower.includes('no insurance')) caseData.hasInsurance = false;
-
-      // Police report
-      if (lower.includes('police report') && lower.includes('yes')) caseData.hasPoliceReport = true;
-
-      // Injury severity
-      if (lower.includes('fracture') || lower.includes('broken')) caseData.injurySeverity = 'fracture';
-      if (lower.includes('soft tissue')) caseData.injurySeverity = 'soft tissue';
-      if (lower.includes('hospitalized')) caseData.injurySeverity = 'hospitalization';
-    }
-
-    async function scoreCase() {
-      try {
-        const response = await fetch('/api/score', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ caseData }),
-        });
-
-        const data = await response.json();
-        const scoreHtml = `
-          <div class="score-box">
-            <h3>Case Score: <span class="score-value">${data.score}/100</span></h3>
-            <p>Decision: <strong>${data.decision}</strong></p>
-            <p>Est. Value: $${data.caseValue.toLocaleString()}</p>
-          </div>
-        `;
-        document.getElementById('chatBox').innerHTML += scoreHtml;
-      } catch (error) {
-        console.error('Scoring error:', error);
-      }
-    }
-
-    function addMessage(text, sender) {
-      const chatBox = document.getElementById('chatBox');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${sender}`;
-      messageDiv.innerHTML = `<div class="message-text">${text}</div>`;
-      chatBox.appendChild(messageDiv);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    // Initial greeting
-    window.addEventListener('load', () => {
-      addMessage('Hello! I\'m here to help qualify your personal injury case. Can you tell me a bit about what happened?', 'bot');
-    });
-
-    // Allow Enter key
-    document.getElementById('userInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendMessage();
-    });
-  </script>
+  <script src="main.js"></script>
 </body>
 </html>
